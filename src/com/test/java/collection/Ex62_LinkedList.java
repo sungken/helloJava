@@ -11,7 +11,7 @@ public class Ex62_LinkedList {
 
 		// ArrayList vs LinkedList
 		// - 메서드 구성 유사 > 사용법이 아주 유사하다.
-		// - 내부 구조가 다르다. > 사용 용도가 다르다.
+		// - 내부 구조가 다르다. > 사용 용도가 다르다.w
 
 		// LinkedList 종류
 		// 1. LinkedList
