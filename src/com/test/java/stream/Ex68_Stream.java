@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import com.test.data.Data;
 import com.test.data.Item;
 import com.test.data.User;
+import com.test.java.collection.Member;
 import com.test.util.MyUtil;
 
 public class Ex68_Stream {
@@ -58,7 +60,7 @@ public class Ex68_Stream {
 		//m1();
 		//m2();
 		//m3();
-		m4(); // 본격 stream 시작
+		//m4(); // 본격 stream 시작
 		/*
 		 스트림, Stream
 		 - 데이터 소스로부터 생성
@@ -88,16 +90,159 @@ public class Ex68_Stream {
 		 - 유일한 요소만 남아있는 스트림
 		 - Set 성질
 		 
+		 변환 (활용도가 많다)*******
+		 - map(), mapXXX()
+		 - 중간 파이프
+		 - 앞의 스트림의 요소를 다른 형태로 변환 후 새로운 스트림을 반환한다.
+		 
+		 정렬
+		 - sorted()
+		 - 중간 파이프
+		 - 사용법이 배열, 컬렉션의 sort() 메서드와 동일 > Comparator
+		 
+		 매칭
+		- allMatch(), anyMatch(), noneMatch()
+		- 최종 파이프
+		- boolean allMatch(Predicate)  : 모든 요소가 조건을 만족하는지?
+		- boolean anyMatch(Predicate)  : 일부 요소가 조건을 만족하는지?
+		- boolean noneMatch(Predicate) : 모든 요소가 조건을 불만족하는지?
 		 
 		 
 		 
 		 */
 		
 		//m5(); // stream()에서 .filter 사용 방법
-		m6();// 중복값 제거 Set
+		//m6();// 중복값 제거 Set
+		//m7();  //map 중간변환 stream
+		//m8();
+		m9();
 		
 		
 	}// main
+
+	private static void m9() {
+		
+		int[] nums = { 2, 4, 6, 8, 10};
+		
+		//요구사항- 배열안에 짝수만 있는가?
+		boolean result = false;
+		
+		for (int n : nums) {
+			if (n % 2 == 1) {
+				result = true;
+				break;
+			}
+		}
+		
+		if(!result) {
+			System.out.println("짝수만 존재");
+		} else {
+			System.out.println("홀수 발견");
+		}
+		
+		
+		result = Arrays.stream(nums).allMatch(n -> n % 2 == 0);
+		System.out.println(result);
+		
+		result = Data.getUserList().stream()
+								   .filter(user -> user.getHeight() >= 178)
+								   .allMatch(user -> user.getGender() == 1);
+		System.out.println();
+		
+		
+		//nums > 홀수가 존재하는지?
+		nums = new int[] { 2, 4, 6, 8, 10};
+		result = Arrays.stream(nums).anyMatch(n -> n % 2 == 1);
+		System.out.println(result);
+		
+		// 키 178 이상 여성이 존재 하는가?
+		result = Data.getUserList().stream()
+								   .filter(user -> user.getHeight() >= 178)
+								   .anyMatch(user -> user.getGender() == 2);
+		System.out.println(result);
+		
+		System.out.println();
+		//너희가 전부 짝수가 맞느냐?
+		nums = new int[] { 2, 4, 6, 8, 10 };
+		result = Arrays.stream(nums).anyMatch(a -> a % 2 == 0); 
+		System.out.println(result);
+		
+		result = Arrays.stream(nums).allMatch(a -> a % 2 == 0); // .allMatch 조건문에 전부 맞는지
+		System.out.println(result);
+		
+		result = Arrays.stream(nums).noneMatch(a -> a % 2 == 0); // .noneMatch 조건문에 만족하는 요소가 하나라도 있으면 false
+		System.out.println(result);
+		
+		
+		
+	}// m9
+
+	private static void m8() {
+		
+		Data.getIntList(10).stream()
+						   .sorted()
+						   .forEach(n -> System.out.println(n));
+		System.out.println();
+		
+		Data.getIntList(10).stream()
+						   //.sorted((a,b) -> b - a)
+//						   .sorted(Comparator.naturalOrder()) // 오름차순
+						   .sorted(Comparator.reverseOrder()) // 내림차순
+						   .forEach(n -> System.out.println(n));
+		System.out.println();
+		
+		Data.getIntList().stream()
+						 .distinct()
+						 .filter(n -> n % 2 == 0)
+						 .sorted()
+						 .forEach(n -> System.out.println(n));
+		System.out.println();
+
+	
+		
+	}// m8
+
+	private static void m7() {
+		
+		List<String> list = Data.getStringList(10);
+		System.out.println(list);
+		System.out.println();
+		
+		list.stream()
+					.map(word -> word.length() >= 5 ? "긴단어" : "짧은단어")
+					.forEach(word -> System.out.println(word));
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		
+		Data.getUserList().stream()
+						  //.map(user -> user.getName())
+						  .map(user -> user.getGender() == 1 ? "남자" : "여자")
+						  .forEach(temp -> System.out.println(temp)
+								  );
+		System.out.println();
+		System.out.println();
+		
+		String[] names = {"홍길동", "아무개", "이순신", "하하하", "호호호"};
+		
+		Arrays.stream(names)
+			  .map(name -> new Member(name, 20)) // Stream<Member>
+			  .forEach(m -> System.out.println(m));
+		System.out.println();
+		System.out.println();
+
+		
+		//User > (변환) > Member
+		Data.getUserList().stream()
+						  .map(user -> new Member(user.getName(), user.getAge()))
+						  .forEach(m -> System.out.println(m));
+		System.out.println();
+		
+		
+		
+		
+		
+	}// m7
 
 	private static void m6() {
 		
@@ -117,10 +262,38 @@ public class Ex68_Stream {
 		//Case 2.  --> Set에서 가장 쉬운 방법
 		Set<Integer> set2 = new HashSet<Integer>(list);
 		System.out.println(set2.size());
+		System.out.println();
+		System.out.println();
+		System.out.println();
 		
 		//Case 3. -> 자주 안씀
 		System.out.println(list.stream().count()); // 원본 값 그대로
 		System.out.println(list.stream().distinct().count()); // 중복값 배제
+		
+		Data.getStringList().stream()
+							.filter(word -> word.length() >= 5)
+							.distinct() // 중복값 제거
+							.forEach(word -> System.out.println(word));
+		System.out.println();
+		System.out.println();
+		
+		
+		ArrayList<Member> mlist = new ArrayList<Member>();
+		//주소값이 다른 길동이는 다른 사람이다.
+		mlist.add(new Member("홍길동", 20));
+		mlist.add(new Member("아무개", 25));
+		mlist.add(new Member("강아지", 5));
+		mlist.add(new Member("고양이", 3));
+		mlist.add(new Member("홍길동", 20));
+		
+		System.out.println(mlist);
+		System.out.println();
+		
+		mlist.stream()
+				.distinct() //길동이는 다른사람이여서 중복값이 아니다.
+				.forEach(m -> System.out.println(m));
+				// 하지만 Member 클래스 에서 같은 중복값으로 만들어서 삭제가 된다.
+		
 		
 		
 		
