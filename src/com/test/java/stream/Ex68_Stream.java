@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -73,12 +75,12 @@ public class Ex68_Stream {
 		 2. 최종 파이프
 		 
 		 최종 처리
-		 - forEach()
+		 - forEach(Consumer)
 		 - 최종 파이프
 		 - 앞의 스트림으로 부터 요소를 받아 최종 처리 하는 메서드
 		 
 		 - 필터링
-		 - filter()
+		 - filter(Predicate)
 		 - 중간 파이프
 		 - 앞의 스트림으로 부터 요소를 받아 조건에 맞는 요소만 남기고 맞지 않는 요소는 버린다.
 		
@@ -91,12 +93,12 @@ public class Ex68_Stream {
 		 - Set 성질
 		 
 		 변환 (활용도가 많다)*******
-		 - map(), mapXXX()
+		 - map(Function), mapXXX()
 		 - 중간 파이프
 		 - 앞의 스트림의 요소를 다른 형태로 변환 후 새로운 스트림을 반환한다.
 		 
 		 정렬
-		 - sorted()
+		 - sorted(Comparator)
 		 - 중간 파이프
 		 - 사용법이 배열, 컬렉션의 sort() 메서드와 동일 > Comparator
 		 
@@ -106,19 +108,111 @@ public class Ex68_Stream {
 		- boolean allMatch(Predicate)  : 모든 요소가 조건을 만족하는지?
 		- boolean anyMatch(Predicate)  : 일부 요소가 조건을 만족하는지?
 		- boolean noneMatch(Predicate) : 모든 요소가 조건을 불만족하는지?
-		 
-		 
-		 
+		
+		집계/통계, Reduce
+		- count()   
+		- max() -가장 큰 값
+		- min()	- 가장 작은값
+		- sum()	- 종합
+		- avg()	- 통계값
+		- 최종 파이프
+		- 앞의 스트림의 요소를 취합해서 하나의 통계값을 생성
+		
+		
 		 */
 		
 		//m5(); // stream()에서 .filter 사용 방법
 		//m6();// 중복값 제거 Set
 		//m7();  //map 중간변환 stream
 		//m8();
-		m9();
+		//m9();
+		m10(); // 집계/통계, Reduce
 		
 		
 	}// main
+
+	private static void m10() {
+		
+		//count()
+		long count = Data.getIntList().stream().count();
+		System.out.println(count);
+		
+		System.out.println(Data.getUserList().stream().filter(user -> user.getGender() == 1).count());
+		System.out.println(Data.getUserList().stream().filter(user -> user.getGender() == 2).count());
+		System.out.println();
+		
+		
+		//max(), min()
+		List<Integer> nums = Data.getIntList();
+		
+		int max = -1;	//nums안의 모든 숫자중 가장 작은 숫자 - 1
+		int min = 101;	// nums안의 모든 숫자중 가장 큰 숫자 + 1
+		
+		for (int n : nums) {
+			if (n > max) {
+				max = n;
+			}
+			if (n < min) {
+				min = n;
+			}
+		}
+		System.out.println(max);
+		System.out.println(min);
+		System.out.println();
+		
+		//Optional<Integer>
+		//- Integer or int 타입과 동일한 자료형
+		//- 값형은 null을 가질 수 없다.
+		//- 참조형은 null을 가질 수 있다.
+		//- null을 가질 수 있는 int
+		System.out.println(nums.stream().max((a, b) -> a - b)); 
+		
+		//nums.clear();
+		
+		Optional<Integer> result = nums.stream().max((a, b) -> a - b);
+		System.out.println(result.get());
+
+		Optional<User> user = Data.getUserList().stream().max((user1, user2) -> user1.getHeight() - user2.getHeight());
+		System.out.println(user.get());
+
+		Optional<User> user3 = Data.getUserList().stream().min((user1, user2) -> user1.getHeight() - user2.getHeight());
+		System.out.println(user3.get());
+		System.out.println();
+		
+		//스트림 요소 타입 > 숫자O or 숫자X
+		// - count(), max(), min() > Stream<Type> > 모든 자료형에 적용 가능
+		
+		//스트림 요소 타입 > 숫자 O
+		//- sum(), avg() > IntStream, DoubleStram... > 숫자 전용 스트림
+		
+		//nums.stream() = Stream<Intrger>
+		//nums.stream().mapToInt(n -> n) == IntStream
+		System.out.println(nums.stream().mapToInt(n -> n).sum());
+		System.out.println(nums.stream().mapToInt(n -> n).average());
+		
+		//Optional<Double> avg = nums.stream().mapToInt(n -> n);
+		OptionalDouble avg = nums.stream().mapToInt(n -> n).average();
+		System.out.println(avg.getAsDouble());
+		
+		
+		//남자 평균 키?
+		double height = Data.getUserList().stream()
+										  .filter(u -> u.getGender() == 1)
+										  .mapToInt(u -> u.getHeight())
+										  .average()
+										  .getAsDouble();
+		System.out.println(height);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}// m10
 
 	private static void m9() {
 		
