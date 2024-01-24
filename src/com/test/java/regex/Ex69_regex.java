@@ -1,6 +1,6 @@
 package com.test.java.regex;
 
-import java.util.Arrays;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -182,12 +182,366 @@ public class Ex69_regex {
 		//m1(); // 글쓰기 >> 개인정보(전화번호) 마스킹
 		//m2(); // 구분자 오타가 있어도 전부 찾는게 가능하다.
 		//m3(); //패턴 객체 == 정규표현식 객체
-		m4(); // 이메일 찾기
+		//m4(); // 이메일 찾기
 		//m5(); //"(홍|김|최|남궁)(길동)"; //모든 성이들어간 길동이 찾기
-
+		m6();
+		
+		
+		
+		
 		
 	}// main
 
+	private static void m6() {
+		
+		//유효성 검사
+		
+		//상황 > 회원가입
+		//1. 아이디 > 필수 입력, 4 ~ 12자 이내, 영문자 + 숫자 + _ + 숫자로 시작 불가능
+		//2. 암호 > 필수 값, 4 ~ 12자 이내
+		//2-1. 암호확인 > (콘솔은 의미 없음)
+		//3. 이름 > 필수값, 2 ~ 4자, 한글만
+		//4. 나이 > 필수값, 숫자만, 1 ~ 120
+		
+		Scanner scan = new Scanner(System.in);
+		
+		//register1(scan); // 1. 일반적인 문자열(제어문) 방식
+		register2(scan); // 2. 정규식 방식
+		
+		
+		
+		
+		
+		
+		
+	}// main
+	
+
+	private static void register2(Scanner scan) {
+		
+		// 2. 정규식 방식
+		System.out.println("[회원가입]");
+
+		String id = "";
+		String pw = "";
+		String name = "";
+		int age = 0;
+		
+		// 루프 구조
+		while (true) {
+			System.out.print("아이디: ");
+			id = scan.nextLine();
+
+			if (invalidateId2(id)) {
+				System.out.println("아이디 > 필수 입력, 4 ~ 12자 이내, 영문자 + 숫자 + _ + 숫자로 시작 X");
+			} else {
+				break;
+			}
+		}
+		
+		while (true) {
+			System.out.print("비밀번호: ");
+			pw = scan.nextLine();
+
+			if (invalidatePw2(pw)) {
+				System.out.println("필수 값 4~ 12자 이내");
+			} else {
+				break;
+			}
+		}
+		
+		while (true) {
+			System.out.print("이름: ");
+			name = scan.nextLine();
+
+			if (invalidateName2(name)) {
+				System.out.println("필수 값 2~ 4자 이내");
+			} else {
+				break;
+			}
+		}
+		
+		while (true) {
+			System.out.print("나이: ");
+			age = scan.nextInt();
+			scan.nextLine();
+			
+			if(invalidateAge2(age)) {
+				System.out.println("필수 값,  숫자만, 1 ~ 120 사이만");
+			} else {
+				break;
+			}
+		}
+		
+		System.out.println("회원 가입 처리.....");
+		System.out.println("종료");
+		
+		
+		
+		
+	} //register2
+
+	private static boolean invalidateAge2(int age) {
+		
+		//4. 나이 > 필수값, 숫자만, 1 ~ 120
+		// 숫자 > 범위 유효성 검사 > 정규식으는 못한다.
+//		String regex = "[0-9]{1,3}"; 
+		
+		
+		return false;
+	}//invalidateAge2
+
+	private static boolean invalidateName2(String name) {
+		
+		//3. 이름 > 필수값, 2 ~ 4자, 한글만
+		
+		String regex = "^[가-힣]{2,4}";
+		Pattern p1 = Pattern.compile(regex);
+		Matcher m1 = p1.matcher(name);
+		
+		return !m1.find();
+		
+	}// invalidateName2
+
+	private static boolean invalidatePw2(String pw) {
+		
+		//2. 암호 > 필수 값, 4 ~ 12자 이내
+		// 비밀 번호는 정규식을 추천하지 않음... 밑에 invalidatePw 사용 하자
+		String regex = ".{4,12}";
+		Pattern p1 = Pattern.compile(regex);
+		Matcher m1 = p1.matcher(pw);
+		
+		return !m1.find();
+		
+	}// invalidatePw2
+
+	private static boolean invalidateId2(String id) {
+		
+		//1. 아이디 > 필수 입력, 4 ~ 12자 이내, 영문자 + 숫자 + _ + 숫자로 시작 X
+		String regex = "^[A-Za-z_]{1}[A-Za-z0-9]{3,11}$"; // ^는 뒤의 검색어가 [] 만 찾아라 라는 말이다.
+		Pattern p1 = Pattern.compile(regex);
+		Matcher m1 = p1.matcher(id);
+		
+//		if(m1.find()) {
+//			return false; // 코드가 너무 지저분
+//		} else {
+//			return true;
+//		}
+//		return false;
+		
+		return !m1.find();
+		
+	}// invalidateId2 정규식 id
+
+	private static void register1(Scanner scan) {
+		
+		// 일반적인 문자열(제어문) 방식
+		System.out.println("[회원가입]");
+		
+		String id = "";
+		String pw = "";
+		String name = "";
+		int age = 0;
+				
+		//루프 구조
+		while (true) {
+			System.out.print("아이디: ");
+			id = scan.nextLine();
+			
+			if(invalidateId(id)) {
+				System.out.println("아이디 > 필수 입력, 4 ~ 12자 이내, 영문자 + 숫자 + _ + 숫자로 시작 X");
+			} else {
+				break;
+			}
+		}
+		
+		while(true) {
+			System.out.print("비밀번호: ");
+			pw = scan.nextLine();
+			
+			if(invalidatePw(pw)) {
+				System.out.println("필수 값 4~ 12자 이내");
+			} else {
+				break;
+			}
+			
+		}
+		
+		while(true) {
+			System.out.print("이름: ");
+			name = scan.nextLine();
+			
+			if(invalidateName(name)) {
+				System.out.println("필수 값 2 ~ 4자 이내");
+			} else {
+				break;
+			}
+		}
+		
+		while (true) {
+			System.out.print("나이: ");
+			age = scan.nextInt();
+			scan.nextLine();
+			
+			if(invalidateAge(age)) {
+				System.out.println("필수 값,  숫자만, 4~ 12자 이내");
+			} else {
+				break;
+			}
+		}
+		
+		System.out.println("회원 가입 처리.....");
+		System.out.println("종료");
+		
+	
+		
+	}// register1
+
+	private static boolean invalidateAge(int age) {
+		
+		//register1의 나이 검사
+		if(age < 1 || age > 120) {
+			return true;
+		}
+		
+		return false;
+	}// invalidateAge
+
+	private static boolean invalidateName(String name) {
+		
+		//register1의 이름 검사
+		//3. 이름 > 필수값, 2 ~ 4자, 한글만
+		
+		//필수값
+		if (name.equals("") || name == null) {
+			return true;
+		}
+
+		// 2~4자 이내
+		if (name.length() < 2 || name.length() > 4) {
+			return true;
+		}
+
+		// 한글만
+		for (int i = 0; i < name.length(); i++) {
+			char c = name.charAt(i);
+			if (c < '가' || c > '힣') {
+				return true;
+			}
+		}
+		
+		return false;
+	}//invalidateName
+
+	private static boolean invalidatePw(String pw) {
+		
+		//register1의 비밀번호 검사
+		//2. 암호 > 필수 값, 4 ~ 12자 이내
+		
+		//필수값
+		if (pw.equals("") || pw == null) {
+			return true;
+		}
+
+		// 4~12자 이내
+		if (pw.length() < 4 || pw.length() > 12) {
+			return true;
+		}
+
+		// 영문자 + 숫자+ _
+		for (int i = 0; i < pw.length(); i++) {
+			char c = pw.charAt(i);
+			if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') && c != '_') {
+				return true;
+			}
+		}
+
+//		// 숫자 시작 X
+//		char c = pw.charAt(0);
+//		if (c >= '0' && c <= '9') {
+//			return true;
+//		}
+		
+
+		return false;
+	}//invalidatePw
+
+	private static boolean invalidateId(String id) {
+		
+		//register1의 아이디 검사
+		//유효성 검사는 잘못된 것을 검사하는게 좋다!!!!!!!!!!!!!!!!!!!!!!!!!
+		//1. 아이디 > 필수 입력, 4 ~ 12자 이내, 영문자 + 숫자 + _ + 숫자로 시작 불가능
+		
+		//필수값
+		if(id.equals("") || id == null) {
+			return true;
+		}
+		
+		//4~12자 이내
+		if(id.length() < 4 || id.length() > 12) {
+			return true;
+		}
+		
+		//영문자 + 숫자+ _
+		for (int i = 0; i< id.length(); i++) {
+			char c = id.charAt(i);
+			if((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') && c != '_') {
+				return true;
+			}
+		}
+		
+		//숫자 시작 X
+		char c = id.charAt(0);
+		if ( c >= '0' && c <= '9') {
+			return true;
+		}
+		
+		// 올바른 것으로 조건을 만들때(불편) ㅡㅡ 코드가 지저분
+		// 이 방식은 쓰지 않음 잘못된 것을 찾는게 좋다.
+//		if (id != null && id.length() > 0) {
+//
+//			if (id.length() >= 4 && id.length() <= 12) {
+//
+//				for (int i = 0; i < id.length(); i++) {
+//					char c = id.charAt(i);
+//
+//					if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_') {
+//
+//					} else {
+//						return false;
+//					}
+//				}
+//
+//				char c = id.charAt(0);
+//
+//				if (c <= '0' || c >= '9') {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//
+//			} else {
+//				return true;
+//			}
+//
+//		} else {
+//			return true;
+//		}
+		
+		
+		return false;
+		
+		
+	} // invalidateId
+
+	
+	
+	
+//-------------------------------------------------------------	
+	
+	
+	
+	
 	private static void m5() {
 		
 		String txt = "안녕하세요. 홍길동 입니다. 네? 당신 이름도 길동이라구요? 아~ 김길동이요? 저쪽에 최길동도 있어요. 그 옆에 남궁길동도 있습니다.";

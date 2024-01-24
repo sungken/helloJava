@@ -33,16 +33,16 @@ public class Q124 {
 					break;
 				} 
 			}
-			while ((line = reader2.readLine()) != null) {
-				String num3 = temp[1];
-				String num4 = temp[2];
-				String num6 = temp[3];
-				
-				if (num2.equals(member)) {
-					break;
-				} 
-			}
-			reader.close();
+//			while ((line = reader2.readLine()) != null) {
+//				String num3 = temp[1];
+//				String num4 = temp[2];
+//				String num6 = temp[3];
+//				
+//				if (num2.equals(member)) {
+//					break;
+//				} 
+//			}
+//			reader.close();
 		} catch (Exception e) {
 			//예외문 처리하는방버 ?
 			System.out.println("요청하신 회원은 없습니다.");
